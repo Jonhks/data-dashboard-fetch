@@ -183,19 +183,19 @@
 //       cohortsJson.forEach(element => {  
 //           const cohortsId = element.id; 
 //           count += 1;    
-          // const cohortOption = `<option class = "option" data-set=${cohortsId} value="${cohortsId}">${cohortsId}</option>`;
-//           // console.log(cohortOption);
-//           // cohortsSelect.innerHtml = cohortOption;
+          //  const cohortOption = `<option class = "option" data-set=${cohortsId} value="${cohortsId}">${cohortsId}</option>`;
+//           console.log(cohortOption);
+//            cohortsSelect.innerHtml = cohortOption;
 //           cohortsSelect.insertAdjacentHTML('beforeEnd', cohortOption);  
-//           // const users = `https://api.laboratoria.la/cohorts/${cohortsId}/users`;
-//           // const responseUsers = new XMLHttpRequest();
-//           // responseUsers.open('GET', users);
-//           // responseUsers.send();
-//           // responseUsers.onload = function () {
-//           //     const usersData = responseUsers.response;
-//           //     const userJson = JSON.parse(usersData);
-//           //     console.log(cohortsId, userJson);
-//           // }
+//            const users = `https://api.laboratoria.la/cohorts/${cohortsId}/users`;
+//            const responseUsers = new XMLHttpRequest();
+//            responseUsers.open('GET', users);
+//            responseUsers.send();
+//            responseUsers.onload = function () {
+//                const usersData = responseUsers.response;
+//                const userJson = JSON.parse(usersData);
+//                console.log(cohortsId, userJson);
+//            }
 //       });
 //       aUsers(cohortsSelect);
 //   }
@@ -252,10 +252,13 @@ const getJson = url => fetch(url).then(response => response.json())
 Promise.all(
   [getJson('https://api.laboratoria.la/cohorts/cdmx-2017-10-bc-core-pm'),
   getJson('https://api.laboratoria.la/cohorts/cdmx-2017-10-bc-core-pm/users'),
-  getJson('https://api.laboratoria.la/cohorts/cdmx-2017-10-bc-core-pm/progress')
+  getJson('https://api.laboratoria.la/cohorts/cdmx-2017-10-bc-core-pm/progress'), 
+  getJson('https://api.laboratoria.la/cohorts'),
+
   ]
 ).then(resultados=> {
-  computeUsersStats(resultados[1], resultados[2], Object.keys(resultados[0].coursesIndex));
+  computeUsersStats(resultados[1], resultados[2], Object.keys(resultados[0].coursesIndex)),
+  printCohorts(resultados[3])
 }) 
 
 const computeUsersStats  = (users, progress, courses) => {
@@ -285,3 +288,12 @@ const computeUsersStats  = (users, progress, courses) => {
 }
 
 
+printCohorts = (cohorts) => { 
+  // console.log(cohorts[0].id)
+  cohorts.forEach(element => {
+    // console.log(element.id)
+    let cohortsId = element.id;
+    const cohortOption = `<option class = "option" data-set=${cohortsId} value="${cohortsId}">${cohortsId}</option>`;
+    inputCohorts.insertAdjacentHTML('beforeEnd', cohortOption); 
+  });
+}
