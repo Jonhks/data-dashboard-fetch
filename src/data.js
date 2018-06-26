@@ -248,18 +248,20 @@
 // }
 const getJson = url => fetch(url).then(response => response.json())
 
-
 Promise.all(
-  [getJson('https://api.laboratoria.la/cohorts/cdmx-2017-10-bc-core-pm'),
+  [
+  getJson('https://api.laboratoria.la/cohorts/cdmx-2017-10-bc-core-pm'),
   getJson('https://api.laboratoria.la/cohorts/cdmx-2017-10-bc-core-pm/users'),
   getJson('https://api.laboratoria.la/cohorts/cdmx-2017-10-bc-core-pm/progress'), 
   getJson('https://api.laboratoria.la/cohorts'),
 
   ]
 ).then(resultados=> {
-  computeUsersStats(resultados[1], resultados[2], Object.keys(resultados[0].coursesIndex)),
-  printCohorts(resultados[3])
-}) 
+  computeUsersStats(resultados[1], resultados[2], Object.keys(resultados[0].coursesIndex))
+  printCohorts(resultados[3]);
+  obtenerCohortId(resultados[3])
+})
+
 
 const computeUsersStats  = (users, progress, courses) => {
 // console.log("users" , users)
@@ -284,7 +286,7 @@ const computeUsersStats  = (users, progress, courses) => {
         sum: 0,
       }})
   })
-  console.log(usersWithStats);
+  // console.log(usersWithStats);
 }
 
 
@@ -293,7 +295,41 @@ printCohorts = (cohorts) => {
   cohorts.forEach(element => {
     // console.log(element.id)
     let cohortsId = element.id;
-    const cohortOption = `<option class = "option" data-set=${cohortsId} value="${cohortsId}">${cohortsId}</option>`;
+    const cohortOption = `<option class = "option" data-set=${cohortsId} value= "${cohortsId}">${cohortsId}</option>`;
     inputCohorts.insertAdjacentHTML('beforeEnd', cohortOption); 
+    // console.log(cohortOption.value)
   });
+}
+
+obtenerCohortId  = (obtenerid) => {
+  obtenerid.forEach(element => {
+    let totalCohort = element;
+    let cohortId = element.id;
+    let coursesIndex = element.coursesIndex;
+    let startCohort = element.start;
+    let endCohort = element.end;
+    let userCountCohort = element.usersCount;
+    // console.log(totalCohort)
+    // console.log(cohortId)
+    // console.log(coursesIndex)
+    // console.log(endCohort)
+    // console.log(startCohort)
+    // console.log(userCountCohort)
+    return cohortId;
+    
+  });
+  return "yes"
+}
+console.log(obtenerCohortId)
+
+
+otra = (cohortId) =>{
+const getJson = url => fetch(url).then(response => response.json())
+  Promise.all(
+    [
+      getJson(`https://api.laboratoria.la/cohorts/${cohortId}/users`)
+    ]
+  ).then(resultados => {  
+    console.log(resultados[0])
+  })
 }
