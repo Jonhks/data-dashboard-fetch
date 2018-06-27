@@ -352,10 +352,48 @@ const getJson = url => fetch(url).then(response => response.json()).then(resulta
     cohorts.forEach(element => {
       // console.log(element.id)
       let cohortsId = element.id;
-      const cohortOption = `<option class = "option" data-set=${cohortsId} value= "${cohortsId}">${cohortsId}</option>`;
+      const cohortOption = `<option class = "option" value= "${cohortsId}">${cohortsId}</option>`;
       inputCohorts.insertAdjacentHTML('beforeEnd', cohortOption); 
       // console.log(cohortOption.value)
     });
   }
+
+  muestraID = (idValue) =>{
+    // console.log(idValue);
+  const getJson = url => fetch(url).then(response => response.json())
+
+  Promise.all(
+    [
+    getJson(`https://api.laboratoria.la/cohorts/${idValue}`),
+    getJson(`https://api.laboratoria.la/cohorts/${idValue}/users`),
+    getJson(`https://api.laboratoria.la/cohorts/${idValue}/progress`), 
+
+    ]
+  ).then(resultados=> {
+    computeUsersStats(resultados[1], resultados[2], Object.keys(resultados[0].coursesIndex))
+  })
+}
+
+const computeUsersStats  = (users, progress, courses) => {
+  const usersWithStats = users.map(user => {
+    const userProgress = progress[user.id];
+    return courses.reduce((memo, course) => {
+      // console.log(userProgress[course], course)
+      const sum = memo.stats.sum + userProgress[course].percent;
+      return {
+          stats: {
+          percent: sum / courses.length,
+          sum: sum,
+        }
+    }
+    },
+      {stats: {
+        percent: 0,
+        sum: 0,
+      }})
+  })
+  console.log(usersWithStats);
+}
+  
 
 
